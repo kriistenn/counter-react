@@ -1,26 +1,53 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import TodoList from './Todo/TododList'
+import Context from './context'
+import AddTodo from './Todo/AddTodo';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  let [todos, setTodos] = React.useState(
+    [
+      {id: 1, completed: false, title: 'Купить масло'},
+      {id: 2, completed: false, title: 'Купить хлеб'},
+      {id: 3, completed: false, title: 'Купить молоко'}
+    ]
+  )
+
+  
+  function toggleTodo(id) {
+    setTodos(
+      todos = todos.map(todo => {
+        if(todo.id === id) {
+          todo.completed = !todo.completed
+        }
+        return todo
+      })
+    )
+  }
+
+  function removeTodo(id) {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
+
+  function addTodo(title) {
+    setTodos(todos.concat([
+      {
+        title,
+        id: Date.now(),
+        completed:false
+      }
+    ]))
+  }
+
+  return(
+    <Context.Provider value={{removeTodo}}>
+      <div className="wrapper">
+      <h1>React tutorial</h1>
+      <AddTodo onCreate={addTodo}/>
+      {todos.length ? <TodoList todos = {todos} onToggle = {toggleTodo}/> : <h1>No todos</h1>}
     </div>
-  );
+    </Context.Provider>
+  )
 }
 
 export default App;
